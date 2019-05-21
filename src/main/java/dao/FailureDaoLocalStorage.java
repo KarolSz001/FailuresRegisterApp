@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class FailureDaoLocalStorage implements FailureDao{
+public class FailureDaoLocalStorage implements FailureDao {
 
     private List<Failure> failures = new LinkedList<>();
 
@@ -28,21 +28,21 @@ public class FailureDaoLocalStorage implements FailureDao{
     @Override
     public Optional<Failure> getFailureById(Long id) {
         return failures.stream()
-                        .filter(failure ->failure.getId().equals(id))
-                        .findFirst();
+                .filter(failure -> failure.getId().equals(id))
+                .findFirst();
     }
 
     @Override
     public Collection<Failure> getFailureByAres(Area are) {
         return failures.stream()
-                .filter(failure ->failure.getArea().equals(are))
+                .filter(failure -> failure.getArea().equals(are))
                 .collect(Collectors.toList());
     }
 
     @Override
     public Collection<Failure> getFailureByPriority(Area are) {
         return failures.stream()
-                .filter(failure ->failure.getArea().equals(are))
+                .filter(failure -> failure.getArea().equals(are))
                 .collect(Collectors.toList());
     }
 
@@ -55,5 +55,12 @@ public class FailureDaoLocalStorage implements FailureDao{
     @Override
     public void deleteFailureByOwner(String owner) {
         failures.removeIf(failure -> failure.getOwner().equals(owner));
+    }
+
+    @Override
+    public Failure update(Failure failure) {
+        deleteFailureById(failure.getId());
+        save(failure);
+        return failure;
     }
 }

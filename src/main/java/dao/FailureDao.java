@@ -20,5 +20,5 @@ public interface FailureDao {
     void deleteFailureById(Long id);
     void deleteFailureByOwner(String owner);
 
-
+    Failure update(Failure failure);
 }

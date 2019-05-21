@@ -8,13 +8,13 @@ import java.util.Objects;
 
 public class Failure {
 
-    private Integer id;
+    private Long id;
     private String description;
     private Priority priority;
     private Area area;
     private String owner;
 
-    public Failure(Integer id, String description, Priority priority, Area area, String owner) {
+    public Failure(Long id, String description, Priority priority, Area area, String owner) {
         this.id = id;
         this.description = description;
         this.priority = priority;
@@ -32,11 +32,11 @@ public class Failure {
         this.owner = owner;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
