@@ -19,4 +19,5 @@ public interface FailureDao {
     void deleteFailureById(Long id);
     void deleteFailureByOwner(Long id);
 
+
 }
