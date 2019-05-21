@@ -1,6 +1,7 @@
 package dao;
 
 import enums.Area;
+import enums.Priority;
 import model.Failure;
 
 import javax.xml.stream.events.Comment;
@@ -27,29 +28,22 @@ public class FailureDaoLocalStorage implements FailureDao {
 
     @Override
     public Optional<Failure> getFailureById(Long id) {
-        return failures.stream()
-                .filter(failure -> failure.getId().equals(id))
-                .findFirst();
+        return failures.stream().filter(failure -> failure.getId().equals(id)).findFirst();
     }
 
     @Override
     public Collection<Failure> getFailureByAres(Area are) {
-        return failures.stream()
-                .filter(failure -> failure.getArea().equals(are))
-                .collect(Collectors.toList());
+        return failures.stream().filter(failure -> failure.getArea().equals(are)).collect(Collectors.toList());
     }
 
     @Override
-    public Collection<Failure> getFailureByPriority(Area are) {
-        return failures.stream()
-                .filter(failure -> failure.getArea().equals(are))
-                .collect(Collectors.toList());
+    public Collection<Failure> getFailureByPriority(Priority priority) {
+        return failures.stream().filter(failure -> failure.getPriority().equals(priority)).collect(Collectors.toList());
     }
 
     @Override
     public void deleteFailureById(Long id) {
         failures.removeIf(failure -> failure.getId().equals(id));
-
     }
 
     @Override
