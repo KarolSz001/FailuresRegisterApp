@@ -22,7 +22,12 @@ public class Failure {
         this.owner = owner;
     }
 
-
+    public Failure(String description, Priority priority, Area area, String owner) {
+        this.description = description;
+        this.priority = priority;
+        this.area = area;
+        this.owner = owner;
+    }
 
     public String getOwner() {
         return owner;
