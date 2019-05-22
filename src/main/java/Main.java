@@ -9,7 +9,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-//        failuresDaoJdbc.save(new Failure("uszkodzona uszczelka", Priority.HIGH, Area.PUMPING_AREA,"Adam Kowal"));
+        failuresDaoJdbc.save(new Failure("uszkodzona uszczelka", Priority.HIGH, Area.PUMPING_AREA,"Adam Kowal"));
 
 
 

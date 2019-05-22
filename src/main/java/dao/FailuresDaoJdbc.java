@@ -5,14 +5,17 @@ import enums.Priority;
 import model.Failure;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class FailuresDaoJdbc implements FailureDao {
 
     private Connection connection;
     private final String databaseName = "failures_db";
-    private final String tableName  = "register_failure";
+    private final String tableName  = "failures_tab";
     private final String user = "root";
     private final String password = "admin";
     private final String[] col = {"id", "description" ,"priority","area", "owner"};
@@ -38,7 +41,7 @@ public class FailuresDaoJdbc implements FailureDao {
         try {
              statement = connection.createStatement();
 
-            String query = "create table if not exists failures_tab ( " +
+            String query = "create table if not exists "+ tableName + "( " +
                      col[0]+ " integer primary key auto_increment, " +
                     col[1] + " varchar(255) not null, " +
                     col[2] + " varchar(50) not null, " +
@@ -54,7 +57,6 @@ public class FailuresDaoJdbc implements FailureDao {
     }
 
 
-
     @Override
     public Failure save(Failure failure) {
 
@@ -64,54 +66,81 @@ public class FailuresDaoJdbc implements FailureDao {
         String area = String.valueOf(failure.getArea());
         String owner = failure.getOwner();
         try {
-            String query = "INSERT INTO " + tableName + " (description, priority, area, owner) values (?, ?, ?, ?)";
+            String query = "INSERT INTO " + tableName + " (description, priority, area, owner ) values(?, ?, ?, ?)";
+
             statement = connection.prepareStatement(query);
+
             statement.setString(1,description);
             statement.setString(2,priority);
             statement.setString(3,area);
             statement.setString(4,owner);
-            statement.execute(query);
+            statement.execute();
             statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
-        return null;
+        return failure;
     }
 
     @Override
     public Collection<Failure> getAllFailures() {
-        return null;
+        List<Failure> failures = new ArrayList<>();
+        Statement statement = null;
+
+        try {
+            statement = connection.createStatement();
+            String query = "SELECT (id, description, priority, area, owner) FROM" + tableName;
+            ResultSet resultSet = statement.executeQuery(query);
+            while(resultSet.next()) {
+                Long id = resultSet.getLong("id");
+                String description = resultSet.getString("description");
+                Priority priority = Priority.valueOf(resultSet.getString("priority"));
+                Area area = Area.valueOf(resultSet.getString("area"));
+                String owner = resultSet.getString("owner");
+
+                Failure failure = new Failure(id,description,priority,area,owner);
+                failures.add(failure);
+            }
+
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return failures;
     }
 
     @Override
     public Optional<Failure> getFailureById(Long id) {
-        return Optional.empty();
+        return getAllFailures().stream().filter(failure -> failure.getId().equals(id)).findFirst();
     }
 
     @Override
-    public Collection<Failure> getFailureByAres(Area are) {
-        return null;
+    public Collection<Failure> getFailureByAres(Area area) {
+        return getAllFailures().stream().filter(failure -> failure.getArea().equals(area)).collect(Collectors.toList());
     }
 
     @Override
     public Collection<Failure> getFailureByPriority(Priority priority) {
-        return null;
+        return getAllFailures().stream().filter(failure -> failure.getArea().equals(priority)).collect(Collectors.toList());
     }
 
     @Override
     public void deleteFailureById(Long id) {
-
+        List<Failure> failures =(List<Failure>) getAllFailures();
+        failures.removeIf(failure -> failure.getId().equals(id));
     }
 
     @Override
     public void deleteFailureByOwner(String owner) {
-
+        List<Failure> failures =(List<Failure>) getAllFailures();
+        failures.removeIf(failure -> failure.getOwner().equals(owner));
     }
 
     @Override
     public Failure update(Failure failure) {
-        return null;
+        deleteFailureById(failure.getId());
+        List<Failure> failures = (List<Failure>) getAllFailures();
+        failures.add(failure);
+        return failure;
     }
 }
